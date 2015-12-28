@@ -1,0 +1,155 @@
+table tr th {
+	}
+
+table tr td {
+	}
+	
+tr {
+	border-collapse:collapse;
+}
+
+
+div.progress {
+	text-align: center;
+    min-width: 20em;
+	position: relative;
+	border-spacing: 0px;
+	left: 0px;
+	padding: 0px;
+	}
+
+div.progress div.left {
+	background: url('../../bar_left.gif');
+    height: 15px;
+	position: absolute;
+	left: 0px;
+	width: 2px;
+	z-index: 3;
+    display: table-cell;
+	}
+
+div.progress div.right {
+	background: url('../../bar_right.gif');
+    height: 15px;
+	position: absolute;
+	right: 0px;
+	width: 2px;
+	z-index: 3;
+    display: table-cell;
+	}
+
+div.progress div.on {
+	background: url('../../bar_blue.gif');
+    height: 15px;
+	position: absolute;
+	left: 2px;
+    width: calc(100% - 4px);         
+    display: table-cell;
+	}
+
+div.progress div.off {
+	background: url('../../bar_gray.gif');
+    height: 15px;
+	position: absolute;
+	right: 2px;
+    display: table-cell;
+	}
+
+div.progress div.value {
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 7pt;   
+	position: relative;
+	padding: 1px;
+	z-index: 2;
+	}
+
+th.header {
+	background: #435370;
+    color:#FFFFFF;
+	text-align: center;	
+}
+
+td.name {
+	padding: 7px;
+	text-align: left;
+	width: 50%;
+}
+
+td.size {
+	text-align: center;
+	width: 10%;
+}
+
+td.progresstd {
+	padding: 5px;
+	text-align: center;
+	width: 10%;
+}
+
+td.speed {
+	text-align: center;
+	width: 10%;
+}
+
+td.timerem {
+	padding: 3px;
+	white-space: nowrap;
+    text-align: center;
+	width: 10%;
+}
+
+td.actions  {
+	text-align: center;
+	width: 0%;
+}
+
+td.actions div {
+	display: table-cell;
+	font-size: 5px;
+	padding: 2px;
+	}
+
+td.actions div img {
+	border: 0px;
+	width: 16px;
+	height: 16px;
+    color:#FFFFFF;
+	background: #FFFFFF;
+	}
+
+td.actions div a img {
+	background: #2288FF;
+	}
+
+	
+table.stats {
+	background: #FFFFFF;
+	width: 100%;
+	}	
+	
+table.stats th {
+	background: #DDD;
+	text-align: right;
+	}	
+
+table.stats td {
+	background: #FFFFFF;
+	text-align: left;
+	}	
+
+table.stats div.log {
+	color: black;
+	text-align: left;
+	width: 100%;
+	height: 20em;
+	min-width: 30em;
+	overflow: auto;
+	}
+
+.rowa {
+	background: #EEE;
+	}
+
+.rowb {
+	background: #FFF;
+	}	
