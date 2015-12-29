@@ -55,12 +55,12 @@ else $verify_hostname = "";
 // create stripped version name
 $vs = str_replace(".", "", $v);
 // fetch release archive
-$return_val = 0; //mwexec("fetch {$verify_hostname} -vo {$install_dir}master.zip 'https://github.com/crestAT/nas4free-downloady/releases/download/{$v}/downloady-{$vs}.zip'", true);
+$return_val = mwexec("fetch {$verify_hostname} -vo {$install_dir}master.zip 'https://github.com/crestAT/nas4free-downloady/releases/download/{$v}/downloady-{$vs}.zip'", true);
 if ($return_val == 0) {
-    $return_val = 0; //mwexec("tar -xf {$install_dir}master.zip -C {$install_dir} --exclude='.git*' --strip-components 2", true);
+    $return_val = mwexec("tar -xf {$install_dir}master.zip -C {$install_dir} --exclude='.git*' --strip-components 2", true);
     if ($return_val == 0) {
-//        exec("rm {$install_dir}master.zip");
-//        exec("chmod -R 775 {$install_dir}");
+        exec("rm {$install_dir}master.zip");
+        exec("chmod -R 775 {$install_dir}");
         if (is_file("{$install_dir}version.txt")) { $file_version = exec("cat {$install_dir}version.txt"); }
         else { $file_version = "n/a"; }
         $savemsg = sprintf(gettext("Update to version %s completed!"), $file_version);
