@@ -129,6 +129,7 @@ function enable_change(enable_change) {
         <?php if (!empty($savemsg)) print_info_box($savemsg);?>
         <table width="100%" border="0" cellpadding="6" cellspacing="0">
             <?php html_titleline_checkbox("enable", gettext("Downloady"), $pconfig['enable'], gettext("Enable"), "enable_change(false)");?>
+            <?php html_text("installation_directory", gettext("Installation directory"), sprintf(gettext("The extension is installed in %s."), $config['downloady']['rootfolder']));?>
     		<?php $a_user = array(); foreach (system_get_user_list() as $userk => $userv) { $a_user[$userk] = htmlspecialchars($userk); }?>
             <?php html_combobox("who", gettext("Username"), $pconfig['who'], $a_user, gettext("Specifies the username which the service will run as."), false);?>
 			<?php html_filechooser("storage_path", gettext("Download directory"), $pconfig['storage_path'], gettext("Where to save downloaded data."), $g['media_path'], false, 60);?>
