@@ -44,6 +44,26 @@ if ($return_val == 0) {
 }
 else { $server_version = gettext("Unable to retrieve version from server!"); }
 
+function cronjob_process_updatenotification($mode, $data) {
+	global $config;
+	$retval = 0;
+	switch ($mode) {
+		case UPDATENOTIFY_MODE_NEW:
+		case UPDATENOTIFY_MODE_MODIFIED:
+			break;
+		case UPDATENOTIFY_MODE_DIRTY:
+			if (is_array($config['cron']['job'])) {
+				$index = array_search_ex($data, $config['cron']['job'], "uuid");
+				if (false !== $index) {
+					unset($config['cron']['job'][$index]);
+					write_config();
+				}
+			}
+			break;
+	}
+	return $retval;
+}
+
 if (isset($_POST['ext_remove']) && $_POST['ext_remove']) {
 // remove start/stop commands
     if ( is_array($config['rc']['postinit'] ) && is_array( $config['rc']['postinit']['cmd'] ) ) {
@@ -58,6 +78,36 @@ if (isset($_POST['ext_remove']) && $_POST['ext_remove']) {
 		++$i;
 		}
 	}
+// remove cronjobs
+    if (isset($config['downloady']['enable_schedule'])) {
+    	updatenotify_set("cronjob", UPDATENOTIFY_MODE_DIRTY, $config['downloady']['schedule_uuid_startup']);
+    	if (is_array($config['cron']['job'])) {
+    				$index = array_search_ex($data, $config['cron']['job'], "uuid");
+    				if (false !== $index) {
+    					unset($config['cron']['job'][$index]);
+    				}
+    			}
+    	write_config();
+    	updatenotify_set("cronjob", UPDATENOTIFY_MODE_DIRTY, $config['downloady']['schedule_uuid_closedown']);
+    	if (is_array($config['cron']['job'])) {
+    				$index = array_search_ex($data, $config['cron']['job'], "uuid");
+    				if (false !== $index) {
+    					unset($config['cron']['job'][$index]);
+    				}
+    			}
+    	write_config();
+        $retval = 0;
+        if (!file_exists($d_sysrebootreqd_path)) {
+        	$retval |= updatenotify_process("cronjob", "cronjob_process_updatenotification");
+        	config_lock();
+        	$retval |= rc_update_service("cron");
+        	config_unlock();
+        }
+        $savemsg = get_std_save_message($retval);
+        if ($retval == 0) {
+        	updatenotify_delete("cronjob");
+        }
+    }
 // remove extension pages
 	mwexec ("rm -rf /usr/local/www/ext/downloady");
 	mwexec ("rm -rf /usr/local/www/downloady.php");

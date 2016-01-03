@@ -30,13 +30,19 @@
     either expressed or implied, of the FreeBSD Project.
 */
 $extension_dir = "/usr/local/www"; 
-if ( !is_dir($extension_dir)) { mwexec("mkdir -p {$extension_dir}", true); }
-mwexec("cp -R {$config['downloady']['rootfolder']}ext/* {$extension_dir}/", true);      // copy extension
-mwexec("cp -R {$config['downloady']['rootfolder']}local/* /usr/local/", true);          // copy wget binaries      
+if (!is_dir($extension_dir)) { mwexec("mkdir -p {$extension_dir}", true); }
+
+$arch = $g['arch'];
+if ($arch == "i386") $arch = "x86";
+elseif ($arch == "amd64") $arch = "x64";  
+
+mwexec("cp -R {$config['downloady']['rootfolder']}ext/* {$extension_dir}/", true);          // copy extension
+mwexec("cp -R {$config['downloady']['rootfolder']}{$arch}/local/* /usr/local/", true);      // copy wget binaries      
 
 if (isset($config['downloady']['enable'])) {
-	if (isset($config['downloady']['resume'])) { 
+	if (isset($config['downloady']['resume']) || isset($config['downloady']['enable_schedule'])) { 
         require_once("{$extension_dir}/downloady.php");
+        if (isset($config['downloady']['full_bandwidth'])) $ratelimit = 0;
         $d = new downloady($dest, $ratelimit);
         $d->StartAll();
     }
