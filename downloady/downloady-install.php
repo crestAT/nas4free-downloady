@@ -29,9 +29,11 @@
     of the authors and should not be interpreted as representing official policies,
     either expressed or implied, of the FreeBSD Project.
 */
-// Version  Date        Description
-// 0.1      2015.12.28  initial release
-
+/* 
+Version  Date        Description
+0.1      2016.01.29  create log-dir in ...-install
+0.1      2015.12.28  initial release
+*/
 $v = "v0.1";            // extension version
 $appname = "Downloady";
 
@@ -47,6 +49,7 @@ global $input_errors;
 global $savemsg;
 
 $install_dir = dirname(__FILE__)."/";                           // get directory where the installer script resides
+if (!is_dir("{$install_dir}log")) { mkdir("{$install_dir}log", 0775, true); }
 
 // check FreeBSD release for fetch options >= 9.3
 $release = explode("-", exec("uname -r"));
