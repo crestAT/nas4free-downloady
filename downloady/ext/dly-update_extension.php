@@ -32,6 +32,7 @@
 require("auth.inc");
 require("guiconfig.inc");
 
+bindtextdomain("nas4free", "/usr/local/share/locale-dly");
 $pgtitle = array(gettext("Extensions"), gettext("Downloady")." ".$config['downloady']['version'], gettext("Maintenance"));
 
 if (is_file("{$config['downloady']['rootfolder']}log/oneload")) { require_once("{$config['downloady']['rootfolder']}log/oneload"); }
@@ -126,6 +127,7 @@ if (isset($_POST['ext_update']) && $_POST['ext_update']) {
     }
     else { $input_errors[] = sprintf(gettext("Installation file %s not found, installation aborted!"), "{$config['downloady']['rootfolder']}downloady-install.php"); }
 }
+bindtextdomain("nas4free", "/usr/local/share/locale");
 include("fbegin.inc");?>
 <!-- The Spinner Elements -->
 <?php include("ext/downloady/spinner.inc");?>
@@ -133,6 +135,7 @@ include("fbegin.inc");?>
 <!-- use: onsubmit="spinner()" within the form tag -->
 
 <form action="dly-update_extension.php" method="post" name="iform" id="iform" onsubmit="spinner()">
+<?php bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr><td class="tabnavtbl">
 		<ul id="tabnav">

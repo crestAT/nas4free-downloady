@@ -35,10 +35,12 @@ if (isset($_GET['log'])) $log = $_GET['log'];
 if (isset($_POST['log'])) $log = $_POST['log'];
 if (empty($log)) $log = 0;
 
+bindtextdomain("nas4free", "/usr/local/share/locale-dly");
 $pgtitle = array(gettext("Extensions"), gettext("Downloady")." ".$config['downloady']['version'], gettext("Files"));
 $pgperm['allowuser'] = TRUE;
-?>
-<?php include("fbegin.inc");?>
+
+bindtextdomain("nas4free", "/usr/local/share/locale");
+include("fbegin.inc");?>
 <script type="text/javascript">
 <!--
 function log_change() {
@@ -48,6 +50,7 @@ function log_change() {
 //-->
 </script>
 <form action="dly-files.php" method="post" name="iform" id="iform">
+<?php bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
     <table width="100%" border="0" cellpadding="0" cellspacing="0">
     	<tr><td class="tabnavtbl">
     		<ul id="tabnav">

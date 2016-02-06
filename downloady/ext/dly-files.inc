@@ -34,6 +34,8 @@ require_once("globals.inc");
 require_once("rc.inc");
 require_once("downloady.php");
 
+bindtextdomain("nas4free", "/usr/local/share/locale-dly");
+
 // Get the location of the log files (may be modified via rc.conf variables).
 $clogdir = rc_getenv_ex("clog_logdir", $g['varlog_path']);
 

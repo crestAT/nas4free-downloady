@@ -35,6 +35,7 @@ if (!isset($config['downloady']['enable'])) header("Location:dly-config.php");
 require_once("auth.inc");
 require_once("downloady.php");
 
+bindtextdomain("nas4free", "/usr/local/share/locale-dly");
 $pgtitle = array(gettext("Extensions"), gettext("Downloady")." ".$config['downloady']['version']);
 
 $html_header = array(
@@ -110,9 +111,10 @@ if (isset($_POST['download']) && $_POST['download']) {
         }
     }
 }
-?>
-<?php include("fbegin.inc");?>
+bindtextdomain("nas4free", "/usr/local/share/locale");
+include("fbegin.inc");?>
 <form action="dly-status.php" method="post" name="iform" id="iform">
+<?php bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
     <table width="100%" border="0" cellpadding="0" cellspacing="0">
     	<tr><td class="tabnavtbl">
     		<ul id="tabnav">
