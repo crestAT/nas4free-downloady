@@ -90,6 +90,12 @@ if ( !isset($config['downloady']) || !is_array($config['downloady'])) {
             if (preg_match('/downloady/', $config['rc']['postinit']['cmd'][$i])) break; ++$i; }
     }
     $config['rc']['postinit']['cmd'][$i] = $config['downloady']['rootfolder']."downloady_start.php";
+    $i =0;
+    if ( is_array($config['rc']['shutdown'] ) && is_array( $config['rc']['shutdown']['cmd'] ) ) {
+        for ($i; $i < count($config['rc']['shutdown']['cmd']); ) {
+            if (preg_match('/downloady/', $config['rc']['shutdown']['cmd'][$i])) break; ++$i; }
+    }
+    $config['rc']['shutdown']['cmd'][$i] = $config['downloady']['rootfolder']."downloady_stop.php";
     write_config();
     require_once("{$config['downloady']['rootfolder']}downloady-start.php");
     echo "\n".$appname." Version ".$config['downloady']['version']." installed";
@@ -106,6 +112,12 @@ else {
             if (preg_match('/downloady/', $config['rc']['postinit']['cmd'][$i])) break; ++$i; }
     }
     $config['rc']['postinit']['cmd'][$i] = $config['downloady']['rootfolder']."downloady_start.php";
+    $i =0;
+    if ( is_array($config['rc']['shutdown'] ) && is_array( $config['rc']['shutdown']['cmd'] ) ) {
+        for ($i; $i < count($config['rc']['shutdown']['cmd']); ) {
+            if (preg_match('/downloady/', $config['rc']['shutdown']['cmd'][$i])) break; ++$i; }
+    }
+    $config['rc']['shutdown']['cmd'][$i] = $config['downloady']['rootfolder']."downloady_stop.php";
     write_config();
     require_once("{$config['downloady']['rootfolder']}downloady-start.php");
 }

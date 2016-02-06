@@ -67,6 +67,7 @@ function cronjob_process_updatenotification($mode, $data) {
 
 if (isset($_POST['ext_remove']) && $_POST['ext_remove']) {
 // remove start/stop commands
+    require_once("{$config['downloady']['rootfolder']}downloady-stop.php");
     if ( is_array($config['rc']['postinit'] ) && is_array( $config['rc']['postinit']['cmd'] ) ) {
 		for ($i = 0; $i < count($config['rc']['postinit']['cmd']);) {
     		if (preg_match('/downloady/', $config['rc']['postinit']['cmd'][$i])) { unset($config['rc']['postinit']['cmd'][$i]);} else{}
@@ -113,6 +114,8 @@ if (isset($_POST['ext_remove']) && $_POST['ext_remove']) {
 	mwexec ("rm -rf /usr/local/www/ext/downloady");
 	mwexec ("rm -rf /usr/local/www/downloady.php");
 	mwexec ("rm -rf /usr/local/www/dly-*");
+// unlink created links
+    if (is_link("/usr/local/share/locale-dly")) unlink("/usr/local/share/locale-dly");
 // remove application section from config.xml
 	if ( is_array($config['downloady'] ) ) { unset( $config['downloady'] ); write_config();}
 	header("Location:index.php");
