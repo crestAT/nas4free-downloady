@@ -111,10 +111,10 @@ if (isset($_POST['download']) && $_POST['download']) {
         }
     }
 }
-bindtextdomain("nas4free", "/usr/local/share/locale");
-include("fbegin.inc");?>
+bindtextdomain("nas4free", "/usr/local/share/locale");                  // to get the right main menu language
+include("fbegin.inc");
+bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
 <form action="dly-status.php" method="post" name="iform" id="iform">
-<?php bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
     <table width="100%" border="0" cellpadding="0" cellspacing="0">
     	<tr><td class="tabnavtbl">
     		<ul id="tabnav">

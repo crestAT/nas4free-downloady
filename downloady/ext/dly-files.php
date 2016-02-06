@@ -39,8 +39,9 @@ bindtextdomain("nas4free", "/usr/local/share/locale-dly");
 $pgtitle = array(gettext("Extensions"), gettext("Downloady")." ".$config['downloady']['version'], gettext("Files"));
 $pgperm['allowuser'] = TRUE;
 
-bindtextdomain("nas4free", "/usr/local/share/locale");
-include("fbegin.inc");?>
+bindtextdomain("nas4free", "/usr/local/share/locale");                  // to get the right main menu language
+include("fbegin.inc");
+bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
 <script type="text/javascript">
 <!--
 function log_change() {
@@ -50,7 +51,6 @@ function log_change() {
 //-->
 </script>
 <form action="dly-files.php" method="post" name="iform" id="iform">
-<?php bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
     <table width="100%" border="0" cellpadding="0" cellspacing="0">
     	<tr><td class="tabnavtbl">
     		<ul id="tabnav">

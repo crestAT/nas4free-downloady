@@ -130,15 +130,15 @@ if (isset($_POST['ext_update']) && $_POST['ext_update']) {
     }
     else { $input_errors[] = sprintf(gettext("Installation file %s not found, installation aborted!"), "{$config['downloady']['rootfolder']}downloady-install.php"); }
 }
-bindtextdomain("nas4free", "/usr/local/share/locale");
-include("fbegin.inc");?>
+bindtextdomain("nas4free", "/usr/local/share/locale");                  // to get the right main menu language
+include("fbegin.inc");
+bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
 <!-- The Spinner Elements -->
 <?php include("ext/downloady/spinner.inc");?>
 <script src="ext/downloady/spin.min.js"></script>
 <!-- use: onsubmit="spinner()" within the form tag -->
 
 <form action="dly-update_extension.php" method="post" name="iform" id="iform" onsubmit="spinner()">
-<?php bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr><td class="tabnavtbl">
 		<ul id="tabnav">

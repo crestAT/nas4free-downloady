@@ -258,8 +258,9 @@ $pconfig['resume'] = isset($config['downloady']['resume']);
 $pconfig['enable_schedule'] = isset($config['downloady']['enable_schedule']) ? true : false;
 $pconfig['full_bandwidth'] = isset($config['downloady']['full_bandwidth']);
 
-bindtextdomain("nas4free", "/usr/local/share/locale");
-include("fbegin.inc");?>
+bindtextdomain("nas4free", "/usr/local/share/locale");                  // to get the right main menu language
+include("fbegin.inc");
+bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
 <script type="text/javascript">
 <!--
 function enable_change(enable_change) {
@@ -293,7 +294,6 @@ function schedule_change() {
 //-->
 </script>
 <form action="dly-config.php" method="post" name="iform" id="iform">
-<?php bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
     <table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr><td class="tabnavtbl">
 		<ul id="tabnav">
