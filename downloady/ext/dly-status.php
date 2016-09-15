@@ -223,7 +223,8 @@ bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
                     <tr>
                     	<td class="background"><br />
                     		<div style="width: 100%; text-align: center;" class="small">Downloady - PHP Download Manager - By CyberLeo |&nbsp;
-                    			<a href="http://www.cyberleo.net/cyberleo/Projects/">cyberLeo Projects</a>
+                    			<a href="http://www.cyberleo.net/cyberleo/Projects/">cyberLeo Projects</a>&nbsp;|&nbsp;modified &amp; extended by crestAT |&nbsp;
+                    			<a href="https://github.com/crestAT/nas4free-downloady">nas4free-downloady</a>
                     		</div>
                         </td>
                     </tr>
