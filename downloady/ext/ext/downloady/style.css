@@ -19,7 +19,7 @@ div.progress {
 	}
 
 div.progress div.left {
-	background: url('../../bar_left.gif');
+	background: url('images/bar_left.gif');
     height: 15px;
 	position: absolute;
 	left: 0px;
@@ -29,7 +29,7 @@ div.progress div.left {
 	}
 
 div.progress div.right {
-	background: url('../../bar_right.gif');
+	background: url('images/bar_right.gif');
     height: 15px;
 	position: absolute;
 	right: 0px;
@@ -39,7 +39,7 @@ div.progress div.right {
 	}
 
 div.progress div.on {
-	background: url('../../bar_blue.gif');
+	background: url('images/bar_blue.gif');
     height: 15px;
 	position: absolute;
 	left: 2px;
@@ -48,7 +48,7 @@ div.progress div.on {
 	}
 
 div.progress div.off {
-	background: url('../../bar_gray.gif');
+	background: url('images/bar_gray.gif');
     height: 15px;
 	position: absolute;
 	right: 2px;

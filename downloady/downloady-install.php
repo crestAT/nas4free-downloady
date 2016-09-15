@@ -31,17 +31,19 @@
 */
 /* 
 Version Date        Description
+0.1.1   2016.07.11  C: new image path, compatible with releases >= 2451
 0.1     2016.02.06  first public release
 */
-$v = "v0.1";            // extension version
+$v = "v0.1-b3";            // extension version
 $appname = "Downloady";
 
 require_once("config.inc");
 
 $arch = $g['arch'];
 $platform = $g['platform'];
-if (($arch != "i386" && $arch != "amd64") && ($arch != "x86" && $arch != "x64" && $arch != "rpi")) { echo "\f{$arch} is an unsupported architecture!\n"; exit(1);  }
-if ($platform != "embedded" && $platform != "full" && $platform != "livecd" && $platform != "liveusb") { echo "\funsupported platform!\n";  exit(1); }
+// no check necessary since the extension is for all archictectures/platforms/releases
+//if (($arch != "i386" && $arch != "amd64") && ($arch != "x86" && $arch != "x64" && $arch != "rpi" && $arch != "rpi2")) { echo "\f{$arch} is an unsupported architecture!\n"; exit(1);  }
+//if ($platform != "embedded" && $platform != "full" && $platform != "livecd" && $platform != "liveusb") { echo "\funsupported platform!\n";  exit(1); }
 
 // install extension
 global $input_errors;
@@ -79,46 +81,26 @@ else {
 
 // install / update application on NAS4Free
 if ( !isset($config['downloady']) || !is_array($config['downloady'])) { 
-// new installation
-    $config['downloady'] = array();      
-    $config['downloady']['appname'] = $appname;
-    $config['downloady']['version'] = exec("cat {$install_dir}version.txt");
-    $config['downloady']['rootfolder'] = $install_dir;
-    $i = 0;
-    if ( is_array($config['rc']['postinit'] ) && is_array( $config['rc']['postinit']['cmd'] ) ) {
-        for ($i; $i < count($config['rc']['postinit']['cmd']);) {
-            if (preg_match('/downloady/', $config['rc']['postinit']['cmd'][$i])) break; ++$i; }
-    }
-    $config['rc']['postinit']['cmd'][$i] = $config['downloady']['rootfolder']."downloady_start.php";
-    $i =0;
-    if ( is_array($config['rc']['shutdown'] ) && is_array( $config['rc']['shutdown']['cmd'] ) ) {
-        for ($i; $i < count($config['rc']['shutdown']['cmd']); ) {
-            if (preg_match('/downloady/', $config['rc']['shutdown']['cmd'][$i])) break; ++$i; }
-    }
-    $config['rc']['shutdown']['cmd'][$i] = $config['downloady']['rootfolder']."downloady_stop.php";
-    write_config();
-    require_once("{$config['downloady']['rootfolder']}downloady-start.php");
-    echo "\n".$appname." Version ".$config['downloady']['version']." installed";
-    echo "\n\nInstallation completed, use WebGUI | Extensions | ".$appname." to configure \nthe application (don't forget to refresh the WebGUI before use)!\n";
+    $config['downloady'] = array();             // new installation
+    $new_installation = true;
 }
-else {
-// update release
-    $config['downloady']['appname'] = $appname;
-    $config['downloady']['version'] = exec("cat {$install_dir}version.txt");
-    $config['downloady']['rootfolder'] = $install_dir;
-    $i = 0;
-    if ( is_array($config['rc']['postinit'] ) && is_array( $config['rc']['postinit']['cmd'] ) ) {
-        for ($i; $i < count($config['rc']['postinit']['cmd']);) {
-            if (preg_match('/downloady/', $config['rc']['postinit']['cmd'][$i])) break; ++$i; }
-    }
-    $config['rc']['postinit']['cmd'][$i] = $config['downloady']['rootfolder']."downloady_start.php";
-    $i =0;
-    if ( is_array($config['rc']['shutdown'] ) && is_array( $config['rc']['shutdown']['cmd'] ) ) {
-        for ($i; $i < count($config['rc']['shutdown']['cmd']); ) {
-            if (preg_match('/downloady/', $config['rc']['shutdown']['cmd'][$i])) break; ++$i; }
-    }
-    $config['rc']['shutdown']['cmd'][$i] = $config['downloady']['rootfolder']."downloady_stop.php";
-    write_config();
-    require_once("{$config['downloady']['rootfolder']}downloady-start.php");
+$config['downloady']['appname'] = $appname;
+$config['downloady']['version'] = exec("cat {$install_dir}version.txt");
+$config['downloady']['rootfolder'] = $install_dir;
+$i = 0;
+if ( is_array($config['rc']['postinit'] ) && is_array( $config['rc']['postinit']['cmd'] ) ) {
+    for ($i; $i < count($config['rc']['postinit']['cmd']);) {
+        if (preg_match('/downloady/', $config['rc']['postinit']['cmd'][$i])) break; ++$i; }
 }
+$config['rc']['postinit']['cmd'][$i] = $config['downloady']['rootfolder']."downloady_start.php";
+$i =0;
+if ( is_array($config['rc']['shutdown'] ) && is_array( $config['rc']['shutdown']['cmd'] ) ) {
+    for ($i; $i < count($config['rc']['shutdown']['cmd']); ) {
+        if (preg_match('/downloady/', $config['rc']['shutdown']['cmd'][$i])) break; ++$i; }
+}
+$config['rc']['shutdown']['cmd'][$i] = $config['downloady']['rootfolder']."downloady_stop.php";
+write_config();
+require_once("{$config['downloady']['rootfolder']}downloady-start.php");
+if ($new_installation) echo "\nInstallation completed, use WebGUI | Extensions | ".$appname." to configure the application!\n";
+else echo "\nUpdate completed, use WebGUI | Extensions | ".$appname." to configure the application!\n";
 ?>

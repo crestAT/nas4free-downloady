@@ -113,9 +113,12 @@ class downloady {
 		return($this->stats_cache[$what.$sid] = $res);
 	}
 
-	function AddURL($url, $rs = false, $pause = false) {	
+	function AddURL($url, $rs = false, $pause = false) {
 		$url = trim($url);
-//		$sid = md5($url);
+        $download_url = $url;
+//		$sid = md5($url);                                               //@A use the file name as id
+        list($file, $rest) = explode("?r=", $url, 2);                   //@A get rid of redirection data
+        $url = $file;
 		$sid = basename($url);
 
 		$urlfile = "{$this->tmpdir}/{$sid}.url";
@@ -128,7 +131,7 @@ class downloady {
 			my_file_put_contents($rsfile, $rs, false);
 		}
 		
-		my_file_put_contents($urlfile, $url);
+		my_file_put_contents($urlfile, $download_url);
 		my_file_put_contents($this->logfile, $url, true);
 
 		$safe_urlfile = escapeshellarg($urlfile);
@@ -136,8 +139,8 @@ class downloady {
 		$safe_destdir = escapeshellarg($this->destdir);
 		$safe_statfile = escapeshellarg($statfile);
 		$safe_ratelimit = escapeshellarg($this->ratelimit);
-
-		exec("{$this->wget} {$this->wgetoptions} --limit-rate={$safe_ratelimit} --referer={$safe_url} --background --input-file={$safe_urlfile} --progress=dot --directory-prefix={$safe_destdir} --output-file={$safe_statfile}", $output);
+        //@A set download filename explicit with -O option -> must include also the download directory name!
+		exec("{$this->wget} {$this->wgetoptions} --limit-rate={$safe_ratelimit} --referer={$safe_url} --background --input-file={$safe_urlfile} --progress=dot --append-output={$safe_statfile} -O {$safe_destdir}/{$sid}", $output);
 		
 		preg_match('/[0-9]+/', $output[0], $output);
 
@@ -287,7 +290,9 @@ class downloady {
 				$res['percent'] = 100;
 				$res['done'] = 1;
 			}
-            $res['savefile'] = $this->destdir."/".basename($res['url']);           //@A set from url to prevent language conflicts
+            list($file, $rest) = explode("?r=", basename($res['url']), 2);  //@A get rid of redirection data
+            $clean_url = $file;                                             //@A create a clean file name
+            $res['savefile'] = $this->destdir."/".$clean_url;               //@A set from url to prevent language conflicts
 		}
 		fclose($fp);
 		return $res;

@@ -1,5 +1,8 @@
 ﻿Version Date        Description
-0.1     2016.02.06  first public release
+0.1-b3  2016.09.15  C: remove redirection data from filename to show clean name
+                    C: bar images to insure compatibility with all N4F releases
+0.1.1   2016.07.11  C: new image path, compatible with releases >= 2451
+0.1     2016.02.06  first release
 
 N: ...  new feature
 C: ...  changes

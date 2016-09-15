@@ -101,7 +101,9 @@ if (isset($_POST['download']) && $_POST['download']) {
             	case "ftp":
                     $d = new downloady($dest, $ratelimit);
             		$d->AddURL($urls[$i], $rs, $pause);
-                	$savemsg .= gettext('File').": ".basename($urls[$i])." ".gettext('added.')."<br />";
+                    list($file, $rest) = explode("?r=", basename($urls[$i]), 2);                           // get rid of redirection data
+                    $clean_url = $file;
+                	$savemsg .= gettext('File').": ".$clean_url." ".gettext('added.')."<br />";
 //                	if ((!$pause) && ($ratelimit != 0)) $savemsg .= "<br />".gettext("Start download(s) with the 'Start all' button.")."<br />";
                 break;
                 default:
