@@ -104,7 +104,6 @@ if (isset($_POST['download']) && $_POST['download']) {
                     list($file, $rest) = explode("?r=", basename($urls[$i]), 2);                           // get rid of redirection data
                     $clean_url = $file;
                 	$savemsg .= gettext('File').": ".$clean_url." ".gettext('added.')."<br />";
-//                	if ((!$pause) && ($ratelimit != 0)) $savemsg .= "<br />".gettext("Start download(s) with the 'Start all' button.")."<br />";
                 break;
                 default:
                     if (trim($urls[$i]) == "") break;
@@ -113,6 +112,9 @@ if (isset($_POST['download']) && $_POST['download']) {
         }
     }
 }
+
+if ($ratelimit != 0) $button_add_download = "Add to the job list";
+else $button_add_download = "Download"; 
 
 $return_val = mwexec("fetch -o {$config['downloady']['rootfolder']}version_server.txt https://raw.github.com/crestAT/nas4free-downloady/master/downloady/version.txt", false);
 if ($return_val == 0) {
@@ -143,14 +145,14 @@ bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
             <body onload="LoadAll();">
 
     		<form enctype="application/x-form-urlencoded" method="POST" name="download">
-    			<textarea name="url" style="width: 100%; font-size: 9pt;" COLS="50" ROWS="2"  type="text" placeholder="&lt;Enter URL(s) here&gt;"></textarea>
+    			<textarea name="url" style="width: 100%; font-size: 9pt;" COLS="50" ROWS="2"  type="text" placeholder="<?="<".gettext("Enter URL(s) here").">";?>"></textarea>
                 <br /><br />
     		<table style="width: 100%; white-space: nowrap;">
                 <tr>
                     <td style="width: 60%; text-align: center; vertical-align: middle;">
-            			<input name="pause" type="checkbox" value="true" />Start Paused &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            			<input name="pause" type="checkbox" value="true" /><?=gettext("Start paused");?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <!-- <input name="rapidshare" type="checkbox" value="true" />Rapidshare &nbsp;&nbsp;&nbsp; -->
-            			<input name="download" type="submit" class="formbtn" title="<?=gettext("Add to the job list");?>" value="<?=gettext("Download");?>"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            			<input name="download" type="submit" class="formbtn" title="<?=gettext($button_add_download);?>" value="<?=gettext($button_add_download);?>"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             			<input name="start_all" type="submit" class="formbtn" title="<?=gettext("Start all jobs");?>" value="<?=gettext("Start all");?>"/>
             			<input name="stop_all" type="submit" class="formbtn" title="<?=gettext("Stop all jobs");?>" value="<?=gettext("Stop all");?>"/>
         			</td>
