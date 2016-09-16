@@ -113,6 +113,13 @@ if (isset($_POST['download']) && $_POST['download']) {
         }
     }
 }
+
+$return_val = mwexec("fetch -o {$config['downloady']['rootfolder']}version_server.txt https://raw.github.com/crestAT/nas4free-downloady/master/downloady/version.txt", true);
+if ($return_val == 0) {
+    $server_version = exec("cat {$config['downloady']['rootfolder']}version_server.txt");
+    if ($server_version != $config['downloady']['version']) { $savemsg = sprintf(gettext("New extension version %s available, push '%s' button to install the new version!"), $server_version, gettext("Update Extension")); }
+}   //EOversion-check
+
 bindtextdomain("nas4free", "/usr/local/share/locale");                  // to get the right main menu language
 include("fbegin.inc");
 bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
@@ -138,24 +145,64 @@ bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
     		<form enctype="application/x-form-urlencoded" method="POST" name="download">
     			<textarea name="url" style="width: 100%; font-size: 9pt;" COLS="50" ROWS="2"  type="text" placeholder="&lt;Enter URL(s) here&gt;"></textarea>
                 <br /><br />
-    		<table  style="width: 100%; white-space: nowrap;">
-                <tr><td style="width: 25%;">&nbsp;</td>
-                    <td style="width: 50%; text-align: center;">
-            			<input name="pause" type="checkbox" value="true" />Start Paused &nbsp;&nbsp;&nbsp;
+    		<table style="width: 100%; white-space: nowrap;">
+                <tr>
+                    <td style="width: 60%; text-align: center; vertical-align: middle;">
+            			<input name="pause" type="checkbox" value="true" />Start Paused &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <!-- <input name="rapidshare" type="checkbox" value="true" />Rapidshare &nbsp;&nbsp;&nbsp; -->
-            			<input name="download" type="submit" class="formbtn" title="<?=gettext("Add to the job list");?>" value="<?=gettext("Download");?>"/>&nbsp;&nbsp;&nbsp;
+            			<input name="download" type="submit" class="formbtn" title="<?=gettext("Add to the job list");?>" value="<?=gettext("Download");?>"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             			<input name="start_all" type="submit" class="formbtn" title="<?=gettext("Start all jobs");?>" value="<?=gettext("Start all");?>"/>
             			<input name="stop_all" type="submit" class="formbtn" title="<?=gettext("Stop all jobs");?>" value="<?=gettext("Stop all");?>"/>
         			</td>
-        			<td style="width: 25%; text-align: right;">
+
+                        <td height="100%" align="right" rowspan="3" style="width: 40%; text-center; vertical-align: middle;>
+                            <form name="form2" action="dly-status.php" method="get">
+                            <select name="if" class="formfld" onchange="submit()">
+                            <?php
+                                $curif = "lan";
+                                if (isset($_GET['if']) && $_GET['if']) $curif = $_GET['if'];
+                                $ifnum = get_ifname($config['interfaces'][$curif]['if']);
+                                $ifdescrs = array('lan' => 'LAN');
+                                for ($j = 1; isset($config['interfaces']['opt' . $j]); $j++) {
+                                	$ifdescrs['opt' . $j] = $config['interfaces']['opt' . $j]['descr'];
+                                }
+                                foreach ($ifdescrs as $ifn => $ifd) {
+                                	echo "<option value=\"$ifn\"";
+                                	if ($ifn == $curif) echo " selected=\"selected\"";
+                                	echo ">" . htmlspecialchars($ifd) . "</option>\n";
+                                }
+                            ?>
+                            </select>
+                            </form>
+                            <object id="graph1" align="center" data="dly-graph.php?ifnum=<?=$ifnum;?>&amp;ifname=<?=rawurlencode($ifdescrs[$curif]);?>" type="image/svg+xml" width="300" height="150">
+                                <param name="src" value="dly-status.php?ifnum=<?=$ifnum;?>&amp;ifname=<?=rawurlencode($ifdescrs[$curif]);?>" />
+                            </object>
+                        </td>
+
+        		</tr>
+        		<tr>
+                    <td style="width: 60%; text-align: center; vertical-align: middle;">
                         <input name="remove_all" type="submit" class="formbtn" title="<?=gettext("Remove all jobs from the job list");?>" value="<?=gettext("Remove");?>"/>
             			<input name="remove_delete" type="submit" class="formbtn" title="<?=gettext("Remove all jobs and delete downloaded files");?>" value="<?=gettext("Remove & delete");?>"/>
         			</td>
         		</tr>
+
+                    <tr>
+                    <td style="width: 60%; text-align: center; vertical-align: middle;">
+                        <div id="usage" class="progress">
+                            <div class="right"></div>
+                            <div class="left"></div>
+                            <div class="on"></div>
+                            <div class="off" style="width: 100%;"></div>
+                            <div class="value"></div>
+                        </div>
+                    </td></tr>
+        		
             </table>
     		</form>
             <div style="width: 100%; background-color:#EEEEEE; ">   <!-- border:1px solid #DEDBD1; border-collapse:separate; border-spacing:2px; -->
                 <table id="content" style="width: 100%">
+<!-- 
                     <tr><td>
                         <div id="usage" class="progress">
                             <div class="right"></div>
@@ -165,6 +212,7 @@ bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
                             <div class="value"></div>
                         </div>
                     </td></tr>
+ -->
                     <tr><td></td></tr><br />
                     <tr>
                         <td class="background" id="progress">

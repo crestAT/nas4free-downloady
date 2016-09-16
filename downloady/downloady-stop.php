@@ -33,6 +33,8 @@ require_once("config.inc");
 $extension_dir = "/usr/local/www";
 require_once("{$extension_dir}/downloady.php");
 
+if (is_link("/usr/local/share/locale-dly")) { mwexec("unlink /usr/local/share/locale-dly", true); }     // remove link to languages
+
 $d = new downloady($dest, $ratelimit);
 $d->StopAll();
 ?>

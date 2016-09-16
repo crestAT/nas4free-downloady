@@ -84,7 +84,7 @@ function cronjob_process_updatenotification($mode, $data) {
 		case UPDATENOTIFY_MODE_MODIFIED:
 			break;
 		case UPDATENOTIFY_MODE_DIRTY:
-			if (is_array($config['cron']['job'])) {
+			if (is_array($config['cron']) && is_array($config['cron']['job'])) {
 				$index = array_search_ex($data, $config['cron']['job'], "uuid");
 				if (false !== $index) {
 					unset($config['cron']['job'][$index]);
@@ -164,7 +164,6 @@ if (isset($_POST['save']) && $_POST['save']) {
                 		$mode = UPDATENOTIFY_MODE_NEW;
                 	}
                 updatenotify_set("cronjob", $mode, $cronjob['uuid']);
-//                write_config();
     
                 unset ($cronjob);
                 $cronjob = array();
@@ -212,26 +211,23 @@ if (isset($_POST['save']) && $_POST['save']) {
                 		$mode = UPDATENOTIFY_MODE_NEW;
                 	}
                 updatenotify_set("cronjob", $mode, $cronjob['uuid']);
-//                write_config();
             }   // end of enable_schedule
             else {
                 $config['downloady']['enable_schedule'] = isset($_POST['enable_schedule']) ? true : false;
             	updatenotify_set("cronjob", UPDATENOTIFY_MODE_DIRTY, $config['downloady']['schedule_uuid_startup']);
-            	if (is_array($config['cron']['job'])) {
-            				$index = array_search_ex($data, $config['cron']['job'], "uuid");
-            				if (false !== $index) {
-            					unset($config['cron']['job'][$index]);
-            				}
-            			}
-//            	write_config();
+    			if (is_array($config['cron']) && is_array($config['cron']['job'])) {
+    				$index = array_search_ex($data, $config['cron']['job'], "uuid");
+    				if (false !== $index) {
+    					unset($config['cron']['job'][$index]);
+    				}
+    			}
             	updatenotify_set("cronjob", UPDATENOTIFY_MODE_DIRTY, $config['downloady']['schedule_uuid_closedown']);
-            	if (is_array($config['cron']['job'])) {
-            				$index = array_search_ex($data, $config['cron']['job'], "uuid");
-            				if (false !== $index) {
-            					unset($config['cron']['job'][$index]);
-            				}
-            			}
-//            	write_config();
+    			if (is_array($config['cron']) && is_array($config['cron']['job'])) {
+    				$index = array_search_ex($data, $config['cron']['job'], "uuid");
+    				if (false !== $index) {
+    					unset($config['cron']['job'][$index]);
+    				}
+    			}
             }   // end of disable_schedule -> remove cronjobs
     		$retval = 0;
     		if (!file_exists($d_sysrebootreqd_path)) {
@@ -257,6 +253,12 @@ $pconfig['ratelimit'] = !empty($config['downloady']['ratelimit']) ? $config['dow
 $pconfig['resume'] = isset($config['downloady']['resume']);
 $pconfig['enable_schedule'] = isset($config['downloady']['enable_schedule']) ? true : false;
 $pconfig['full_bandwidth'] = isset($config['downloady']['full_bandwidth']);
+
+$return_val = mwexec("fetch -o {$config['downloady']['rootfolder']}version_server.txt https://raw.github.com/crestAT/nas4free-downloady/master/downloady/version.txt", true);
+if ($return_val == 0) {
+    $server_version = exec("cat {$config['downloady']['rootfolder']}version_server.txt");
+    if ($server_version != $config['downloady']['version']) { $savemsg = sprintf(gettext("New extension version %s available, push '%s' button to install the new version!"), $server_version, gettext("Update Extension")); }
+}   //EOversion-check
 
 bindtextdomain("nas4free", "/usr/local/share/locale");                  // to get the right main menu language
 include("fbegin.inc");

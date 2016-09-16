@@ -38,7 +38,7 @@ elseif ($arch == "amd64") $arch = "x64";
 
 mwexec("cp -R {$config['downloady']['rootfolder']}ext/* {$extension_dir}/", true);          // copy extension
 mwexec("cp -R {$config['downloady']['rootfolder']}{$arch}/local/* /usr/local/", true);      // copy wget binaries      
-if ( !is_link ( "/usr/local/share/locale-dly")) { mwexec("ln -s {$config['downloady']['rootfolder']}locale-dly /usr/local/share/", true); }     // create link to languages
+if (!is_link("/usr/local/share/locale-dly")) { mwexec("ln -s {$config['downloady']['rootfolder']}locale-dly /usr/local/share/", true); }     // create link to languages
 
 if (isset($config['downloady']['enable'])) {
 	if (isset($config['downloady']['resume']) || isset($config['downloady']['enable_schedule'])) { 

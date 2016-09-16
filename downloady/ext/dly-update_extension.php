@@ -37,9 +37,9 @@ $pgtitle = array(gettext("Extensions"), gettext("Downloady")." ".$config['downlo
 
 if (is_file("{$config['downloady']['rootfolder']}log/oneload")) { require_once("{$config['downloady']['rootfolder']}log/oneload"); }
 
-$return_val = mwexec("fetch -o {$config['downloady']['rootfolder']}log/version.txt https://raw.github.com/crestAT/nas4free-downloady/master/downloady/version.txt", true);
-if ($return_val == 0) { 
-    $server_version = exec("cat {$config['downloady']['rootfolder']}log/version.txt"); 
+$return_val = mwexec("fetch -o {$config['downloady']['rootfolder']}version_server.txt https://raw.github.com/crestAT/nas4free-downloady/master/downloady/version.txt", true);
+if ($return_val == 0) {
+    $server_version = exec("cat {$config['downloady']['rootfolder']}version_server.txt");
     if ($server_version != $config['downloady']['version']) { $savemsg = sprintf(gettext("New extension version %s available, push '%s' button to install the new version!"), $server_version, gettext("Update Extension")); }
     mwexec("fetch -o {$config['downloady']['rootfolder']}release_notes.txt https://raw.github.com/crestAT/nas4free-downloady/master/downloady/release_notes.txt", false);
 }
@@ -53,7 +53,7 @@ function cronjob_process_updatenotification($mode, $data) {
 		case UPDATENOTIFY_MODE_MODIFIED:
 			break;
 		case UPDATENOTIFY_MODE_DIRTY:
-			if (is_array($config['cron']['job'])) {
+			if (is_array($config['cron']) && is_array($config['cron']['job'])) {
 				$index = array_search_ex($data, $config['cron']['job'], "uuid");
 				if (false !== $index) {
 					unset($config['cron']['job'][$index]);
@@ -83,20 +83,19 @@ if (isset($_POST['ext_remove']) && $_POST['ext_remove']) {
 // remove cronjobs
     if (isset($config['downloady']['enable_schedule'])) {
     	updatenotify_set("cronjob", UPDATENOTIFY_MODE_DIRTY, $config['downloady']['schedule_uuid_startup']);
-    	if (is_array($config['cron']['job'])) {
-    				$index = array_search_ex($data, $config['cron']['job'], "uuid");
-    				if (false !== $index) {
-    					unset($config['cron']['job'][$index]);
-    				}
-    			}
-    	write_config();
+		if (is_array($config['cron']) && is_array($config['cron']['job'])) {
+			$index = array_search_ex($data, $config['cron']['job'], "uuid");
+			if (false !== $index) {
+				unset($config['cron']['job'][$index]);
+			}
+		}
     	updatenotify_set("cronjob", UPDATENOTIFY_MODE_DIRTY, $config['downloady']['schedule_uuid_closedown']);
-    	if (is_array($config['cron']['job'])) {
-    				$index = array_search_ex($data, $config['cron']['job'], "uuid");
-    				if (false !== $index) {
-    					unset($config['cron']['job'][$index]);
-    				}
-    			}
+		if (is_array($config['cron']) && is_array($config['cron']['job'])) {
+			$index = array_search_ex($data, $config['cron']['job'], "uuid");
+			if (false !== $index) {
+				unset($config['cron']['job'][$index]);
+			}
+		}
     	write_config();
         $retval = 0;
         if (!file_exists($d_sysrebootreqd_path)) {
@@ -114,6 +113,7 @@ if (isset($_POST['ext_remove']) && $_POST['ext_remove']) {
 	mwexec ("rm -rf /usr/local/www/ext/downloady");
 	mwexec ("rm -rf /usr/local/www/downloady.php");
 	mwexec ("rm -rf /usr/local/www/dly-*");
+    mwexec("rmdir -p /usr/local/www/ext");    // to prevent empty extensions menu entry in top GUI menu if there are no other extensions installed
 // unlink created links
     if (is_link("/usr/local/share/locale-dly")) unlink("/usr/local/share/locale-dly");
 // remove application section from config.xml

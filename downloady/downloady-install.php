@@ -34,7 +34,7 @@ Version Date        Description
 0.1.1   2016.07.11  C: new image path, compatible with releases >= 2451
 0.1     2016.02.06  first public release
 */
-$v = "v0.1-b3";            // extension version
+$v = "v0.1-b4";            // extension version
 $appname = "Downloady";
 
 require_once("config.inc");
@@ -102,5 +102,4 @@ $config['rc']['shutdown']['cmd'][$i] = $config['downloady']['rootfolder']."downl
 write_config();
 require_once("{$config['downloady']['rootfolder']}downloady-start.php");
 if ($new_installation) echo "\nInstallation completed, use WebGUI | Extensions | ".$appname." to configure the application!\n";
-else echo "\nUpdate completed, use WebGUI | Extensions | ".$appname." to configure the application!\n";
 ?>
