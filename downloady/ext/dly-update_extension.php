@@ -37,7 +37,7 @@ $pgtitle = array(gettext("Extensions"), gettext("Downloady")." ".$config['downlo
 
 if (is_file("{$config['downloady']['rootfolder']}log/oneload")) { require_once("{$config['downloady']['rootfolder']}log/oneload"); }
 
-$return_val = mwexec("fetch -o {$config['downloady']['rootfolder']}version_server.txt https://raw.github.com/crestAT/nas4free-downloady/master/downloady/version.txt", true);
+$return_val = mwexec("fetch -o {$config['downloady']['rootfolder']}version_server.txt https://raw.github.com/crestAT/nas4free-downloady/master/downloady/version.txt", false);
 if ($return_val == 0) {
     $server_version = exec("cat {$config['downloady']['rootfolder']}version_server.txt");
     if ($server_version != $config['downloady']['version']) { $savemsg = sprintf(gettext("New extension version %s available, push '%s' button to install the new version!"), $server_version, gettext("Update Extension")); }

@@ -39,7 +39,7 @@ bindtextdomain("nas4free", "/usr/local/share/locale-dly");
 $pgtitle = array(gettext("Extensions"), gettext("Downloady")." ".$config['downloady']['version'], gettext("Files"));
 $pgperm['allowuser'] = TRUE;
 
-$return_val = mwexec("fetch -o {$config['downloady']['rootfolder']}version_server.txt https://raw.github.com/crestAT/nas4free-downloady/master/downloady/version.txt", true);
+$return_val = mwexec("fetch -o {$config['downloady']['rootfolder']}version_server.txt https://raw.github.com/crestAT/nas4free-downloady/master/downloady/version.txt", false);
 if ($return_val == 0) {
     $server_version = exec("cat {$config['downloady']['rootfolder']}version_server.txt");
     if ($server_version != $config['downloady']['version']) { $savemsg = sprintf(gettext("New extension version %s available, push '%s' button to install the new version!"), $server_version, gettext("Update Extension")); }
