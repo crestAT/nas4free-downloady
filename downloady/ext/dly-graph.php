@@ -48,9 +48,9 @@ $ifname=@htmlspecialchars($_GET["ifname"]) ? htmlspecialchars($_GET["ifname"]) :
 
 /********* Other conf *******/
 $scale_type="follow"; //Autoscale default setup : "up" = only increase scale; "follow" = increase and decrease scale according to current graphed datas
-$nb_plot=$config['extended-gui']['graph_nb_plot'];              //NB plot in graph default = 120
-$time_interval=$config['extended-gui']['graph_time_interval'];  //Refresh time Interval default = 1
-$unit="bytes";         //Initial unit type: "bits" or "bytes"
+$nb_plot=300;         //NB plot in graph default = 120
+$time_interval=1;     //Refresh time Interval default = 1
+$unit="bytes";        //Initial unit type: "bits" or "bytes"
 $fetch_link = "stats.php?if=$ifnum";
 
 //SVG attributes
