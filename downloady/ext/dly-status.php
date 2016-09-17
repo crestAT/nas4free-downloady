@@ -113,8 +113,8 @@ if (isset($_POST['download']) && $_POST['download']) {
     }
 }
 
-if ($ratelimit != 0) $button_add_download = "Add to the job list";
-else $button_add_download = "Download"; 
+if ($ratelimit != 0) $button_add_download = gettext("Add to the job list");
+else $button_add_download = gettext("Download"); 
 
 $return_val = mwexec("fetch -o {$config['downloady']['rootfolder']}version_server.txt https://raw.github.com/crestAT/nas4free-downloady/master/downloady/version.txt", false);
 if ($return_val == 0) {
@@ -147,74 +147,60 @@ bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
     		<form enctype="application/x-form-urlencoded" method="POST" name="download">
     			<textarea name="url" style="width: 100%; font-size: 9pt;" COLS="50" ROWS="2"  type="text" placeholder="<?="<".gettext("Enter URL(s) here").">";?>"></textarea>
                 <br /><br />
-    		<table style="width: 100%; white-space: nowrap;">
+    		<table style="width: 100%; white-space: nowrap; border-collapse: collapse;">
                 <tr>
-                    <td style="width: 60%; text-align: center; vertical-align: middle;">
+                    <td style="width: 70%; text-align: center; vertical-align: middle; border: 1px solid #999999;">
             			<input name="pause" type="checkbox" value="true" /><?=gettext("Start paused");?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <!-- <input name="rapidshare" type="checkbox" value="true" />Rapidshare &nbsp;&nbsp;&nbsp; -->
-            			<input name="download" type="submit" class="formbtn" title="<?=gettext($button_add_download);?>" value="<?=gettext($button_add_download);?>"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            			<input name="download" type="submit" class="formbtn" title="<?=$button_add_download;?>" value="<?=$button_add_download;?>"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             			<input name="start_all" type="submit" class="formbtn" title="<?=gettext("Start all jobs");?>" value="<?=gettext("Start all");?>"/>
             			<input name="stop_all" type="submit" class="formbtn" title="<?=gettext("Stop all jobs");?>" value="<?=gettext("Stop all");?>"/>
         			</td>
-
-                        <td height="100%" align="right" rowspan="3" style="width: 40%; text-center; vertical-align: middle;>
-                            <form name="form2" action="dly-status.php" method="get">
-                            <select name="if" class="formfld" onchange="submit()">
-                            <?php
-                                $curif = "lan";
-                                if (isset($_GET['if']) && $_GET['if']) $curif = $_GET['if'];
-                                $ifnum = get_ifname($config['interfaces'][$curif]['if']);
-                                $ifdescrs = array('lan' => 'LAN');
-                                for ($j = 1; isset($config['interfaces']['opt' . $j]); $j++) {
-                                	$ifdescrs['opt' . $j] = $config['interfaces']['opt' . $j]['descr'];
-                                }
-                                foreach ($ifdescrs as $ifn => $ifd) {
-                                	echo "<option value=\"$ifn\"";
-                                	if ($ifn == $curif) echo " selected=\"selected\"";
-                                	echo ">" . htmlspecialchars($ifd) . "</option>\n";
-                                }
-                            ?>
-                            </select>
-                            </form>
-                            <object id="graph1" align="center" data="dly-graph.php?ifnum=<?=$ifnum;?>&amp;ifname=<?=rawurlencode($ifdescrs[$curif]);?>" type="image/svg+xml" width="300" height="150">
-                                <param name="src" value="dly-status.php?ifnum=<?=$ifnum;?>&amp;ifname=<?=rawurlencode($ifdescrs[$curif]);?>" />
-                            </object>
-                        </td>
+                    <td height="100%" align="right" rowspan="3" style="width: 30%; text-center; vertical-align: middle;>
+                        <form name="form2" action="dly-status.php" method="get">
+                        <select name="if" class="formfld" onchange="submit()">
+                        <?php
+                            $curif = "lan";
+                            if (isset($_GET['if']) && $_GET['if']) $curif = $_GET['if'];
+                            $ifnum = get_ifname($config['interfaces'][$curif]['if']);
+                            $ifdescrs = array('lan' => 'LAN');
+                            for ($j = 1; isset($config['interfaces']['opt' . $j]); $j++) {
+                            	$ifdescrs['opt' . $j] = $config['interfaces']['opt' . $j]['descr'];
+                            }
+                            foreach ($ifdescrs as $ifn => $ifd) {
+                            	echo "<option value=\"$ifn\"";
+                            	if ($ifn == $curif) echo " selected=\"selected\"";
+                            	echo ">" . htmlspecialchars($ifd) . "</option>\n";
+                            }
+                        ?>
+                        </select>
+                        </form>
+                        <object id="graph1" align="center" data="dly-graph.php?ifnum=<?=$ifnum;?>&amp;ifname=<?=rawurlencode($ifdescrs[$curif]);?>" type="image/svg+xml" width="300" height="150">
+                            <param name="src" value="dly-status.php?ifnum=<?=$ifnum;?>&amp;ifname=<?=rawurlencode($ifdescrs[$curif]);?>" />
+                        </object>
+                    </td>
 
         		</tr>
         		<tr>
-                    <td style="width: 60%; text-align: center; vertical-align: middle;">
-                        <input name="remove_all" type="submit" class="formbtn" title="<?=gettext("Remove all jobs from the job list");?>" value="<?=gettext("Remove");?>"/>
-            			<input name="remove_delete" type="submit" class="formbtn" title="<?=gettext("Remove all jobs and delete downloaded files");?>" value="<?=gettext("Remove & delete");?>"/>
+                    <td style="width: 70%; text-align: center; vertical-align: middle; border: 1px solid #999999;">
+                        <input name="remove_all" type="submit" class="formbtn" title="<?=gettext("Remove all jobs from the job list");?>" value="<?=gettext("Remove");?>" onclick="return confirm('<?=gettext("Remove all jobs from the job list")."?";?>')" />
+            			<input name="remove_delete" type="submit" class="formbtn" title="<?=gettext("Remove all jobs and delete downloaded files");?>" value="<?=gettext("Remove & delete");?>" onclick="return confirm('<?=gettext("Remove all jobs and delete downloaded files")."?";?>')" />
         			</td>
         		</tr>
-
-                    <tr>
-                    <td style="width: 60%; text-align: center; vertical-align: middle;">
-                        <div id="usage" class="progress">
-                            <div class="right"></div>
-                            <div class="left"></div>
-                            <div class="on"></div>
-                            <div class="off" style="width: 100%;"></div>
-                            <div class="value"></div>
-                        </div>
-                    </td></tr>
-        		
+                <tr>
+                <td style="width: 70%; text-align: center; vertical-align: middle; padding-left: 10px; padding-right: 10px; border: 1px solid #999999; ">
+                    <div id="usage" class="progress">
+                        <div class="right"></div>
+                        <div class="left"></div>
+                        <div class="on"></div>
+                        <div class="off" style="width: 100%;"></div>
+                        <div class="value"></div>
+                    </div>
+                </td></tr>
             </table>
     		</form>
             <div style="width: 100%; background-color:#EEEEEE; ">   <!-- border:1px solid #DEDBD1; border-collapse:separate; border-spacing:2px; -->
                 <table id="content" style="width: 100%">
-<!-- 
-                    <tr><td>
-                        <div id="usage" class="progress">
-                            <div class="right"></div>
-                            <div class="left"></div>
-                            <div class="on"></div>
-                            <div class="off" style="width: 100%;"></div>
-                            <div class="value"></div>
-                        </div>
-                    </td></tr>
- -->
                     <tr><td></td></tr><br />
                     <tr>
                         <td class="background" id="progress">

@@ -163,7 +163,7 @@ bindtextdomain("nas4free", "/usr/local/share/locale-dly"); ?>
 			<?php html_separator();?>
         </table>
         <div id="update_remarks">
-            <?php html_remark("note_remove", gettext("Note"), gettext("Removing Downloady integration from NAS4Free will leave the installation folder untouched - remove the files using Windows Explorer, FTP or some other tool of your choice. <br /><b>Please note: this page will no longer be available.</b> You'll have to re-run Downloady extension installation to get it back on your NAS4Free."));?>
+            <?php html_remark("note_remove", gettext("Note"), sprintf(gettext("Removing %s integration from NAS4Free will leave the installation folder untouched - remove the files using Windows Explorer, FTP or some other tool of your choice. <br /><b>Please note: this page will no longer be available.</b> You'll have to re-run %s extension installation to get it back on your NAS4Free."), gettext("Downloady"), gettext("Downloady")));?>
             <br />
             <input id="ext_update" name="ext_update" type="submit" class="formbtn" value="<?=gettext("Update Extension");?>" onclick="return confirm('<?=gettext("The selected operation will be completed. Please do not click any other buttons!");?>')" />
             <input id="ext_remove" name="ext_remove" type="submit" class="formbtn" value="<?=gettext("Remove Extension");?>" onclick="return confirm('<?=gettext("Do you really want to remove the extension from the system?");?>')" />

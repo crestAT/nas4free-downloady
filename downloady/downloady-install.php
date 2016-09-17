@@ -29,12 +29,7 @@
     of the authors and should not be interpreted as representing official policies,
     either expressed or implied, of the FreeBSD Project.
 */
-/* 
-Version Date        Description
-0.1.1   2016.07.11  C: new image path, compatible with releases >= 2451
-0.1     2016.02.06  first public release
-*/
-$v = "v0.1-b4";            // extension version
+$v = "v0.1";            // extension version
 $appname = "Downloady";
 
 require_once("config.inc");
