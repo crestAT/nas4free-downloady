@@ -30,6 +30,7 @@
     either expressed or implied, of the FreeBSD Project.
 */
 require_once("config.inc");
+
 $extension_dir = "/usr/local/www";
 require_once("{$extension_dir}/downloady.php");
 
