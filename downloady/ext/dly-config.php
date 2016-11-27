@@ -2,7 +2,7 @@
 /* 
     dly-config.php
 
-    Copyright (c) 2015 - 2016 Andreas Schmidhuber
+    Copyright (c) 2015 - 2017 Andreas Schmidhuber
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -137,7 +137,7 @@ if (isset($_POST['save']) && $_POST['save']) {
                 	$cronjob['all_months'] = $a_cronjob[$cnid]['all_months'];
                 	$cronjob['all_weekdays'] = $a_cronjob[$cnid]['all_weekdays'];
                 	$cronjob['who'] = 'root';
-                	$cronjob['command'] = "{$config['downloady']['rootfolder']}downloady_start.php && logger downloady: scheduled startup";
+                	$cronjob['command'] = "/usr/local/bin/php-cgi -f {$config['downloady']['rootfolder']}downloady-start.php && logger downloady: scheduled startup";
                 } else {
                 	$cronjob['enable'] = true;
                 	$cronjob['uuid'] = uuid();
@@ -153,7 +153,7 @@ if (isset($_POST['save']) && $_POST['save']) {
                 	$cronjob['all_months'] = 1;
                 	$cronjob['all_weekdays'] = 1;
                 	$cronjob['who'] = 'root';
-                	$cronjob['command'] = "{$config['downloady']['rootfolder']}downloady_start.php && logger downloady: scheduled startup";
+                	$cronjob['command'] = "/usr/local/bin/php-cgi -f {$config['downloady']['rootfolder']}downloady-start.php && logger downloady: scheduled startup";
                     $config['downloady']['schedule_uuid_startup'] = $cronjob['uuid'];
                 }
                 if (isset($uuid) && (FALSE !== $cnid)) {
@@ -184,7 +184,7 @@ if (isset($_POST['save']) && $_POST['save']) {
                 	$cronjob['all_months'] = $a_cronjob[$cnid]['all_months'];
                 	$cronjob['all_weekdays'] = $a_cronjob[$cnid]['all_weekdays'];
                 	$cronjob['who'] = 'root';
-                	$cronjob['command'] = "{$config['downloady']['rootfolder']}downloady_stop.php && logger downloady: scheduled closedown";
+                	$cronjob['command'] = "/usr/local/bin/php-cgi -f {$config['downloady']['rootfolder']}downloady-stop.php && logger downloady: scheduled closedown";
                 } else {
                 	$cronjob['enable'] = true;
                 	$cronjob['uuid'] = uuid();
@@ -200,7 +200,7 @@ if (isset($_POST['save']) && $_POST['save']) {
                 	$cronjob['all_months'] = 1;
                 	$cronjob['all_weekdays'] = 1;
                 	$cronjob['who'] = 'root';
-                	$cronjob['command'] = "{$config['downloady']['rootfolder']}downloady_stop.php && logger downloady: scheduled closedown";
+                	$cronjob['command'] = "/usr/local/bin/php-cgi -f {$config['downloady']['rootfolder']}downloady-stop.php && logger downloady: scheduled closedown";
                     $config['downloady']['schedule_uuid_closedown'] = $cronjob['uuid'];
                 }
                 if (isset($uuid) && (FALSE !== $cnid)) {
@@ -254,11 +254,14 @@ $pconfig['resume'] = isset($config['downloady']['resume']);
 $pconfig['enable_schedule'] = isset($config['downloady']['enable_schedule']) ? true : false;
 $pconfig['full_bandwidth'] = isset($config['downloady']['full_bandwidth']);
 
-$return_val = mwexec("fetch -o {$config['downloady']['rootfolder']}version_server.txt https://raw.github.com/crestAT/nas4free-downloady/master/downloady/version.txt", false);
-if ($return_val == 0) {
-    $server_version = exec("cat {$config['downloady']['rootfolder']}version_server.txt");
-    if ($server_version != $config['downloady']['version']) { $savemsg = sprintf(gettext("New extension version %s available, push '%s' button to install the new version!"), $server_version, gettext("Update Extension")); }
-}   //EOversion-check
+$test_filename = "{$config['downloady']['rootfolder']}version_server.txt";
+if (!is_file($test_filename) || filemtime($test_filename) < time() - 86400) {	// test if file exists or is older than 24 hours
+	$return_val = mwexec("fetch -o {$test_filename} https://raw.github.com/crestAT/nas4free-downloady/master/downloady/version.txt", false);
+	if ($return_val == 0) {
+	    $server_version = exec("cat {$test_filename}");
+	    if ($server_version != $config['downloady']['version']) { $savemsg = sprintf(gettext("New extension version %s available, push '%s' button to install the new version!"), $server_version, gettext("Update Extension")); }
+	}
+}	//EOversion-check
 
 bindtextdomain("nas4free", "/usr/local/share/locale");                  // to get the right main menu language
 include("fbegin.inc");
@@ -323,9 +326,9 @@ function schedule_change() {
             <?php html_checkbox("resume", gettext("Resume"), $pconfig['resume'], gettext("Resume downloads after system startup."), "", false);?>
             <?php html_checkbox("enable_schedule", gettext("Daily schedule"), $pconfig['enable_schedule'], gettext("Enable scheduler for downloads."), "", false, "schedule_change()");?>
     		<?php $hours = array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23); ?>
-            <?php html_combobox("startup", gettext("Startup"), $config['downloady']['schedule_startup'], $hours, gettext("Choose a startup hour for")." ".$config['downloady']['appname'], true);?>
-            <?php html_combobox("closedown", gettext("Closedown"), $config['downloady']['schedule_closedown'], $hours, gettext("Choose a closedown hour for")." ".$config['downloady']['appname'], true);?>
-            <?php html_checkbox("full_bandwidth", gettext("Full bandwidth"), $pconfig['full_bandwidth'], gettext("Use full bandwidth on scheduled startup."), "", false);?>
+            <?php html_checkbox("full_bandwidth", gettext("Daily schedule")." - ".gettext("Full bandwidth"), $pconfig['full_bandwidth'], gettext("Use full bandwidth on scheduled startup."), "", false);?>
+            <?php html_combobox("startup", gettext("Daily schedule")." - ".gettext("Startup"), $config['downloady']['schedule_startup'], $hours, gettext("Choose a startup hour for")." ".$config['downloady']['appname'], true);?>
+            <?php html_combobox("closedown", gettext("Daily schedule")." - ".gettext("Closedown"), $config['downloady']['schedule_closedown'], $hours, gettext("Choose a closedown hour for")." ".$config['downloady']['appname'], true);?>
         </table>
         <div id="submit">
 			<input id="save" name="save" type="submit" class="formbtn" value="<?=gettext("Save & Restart");?>"/>

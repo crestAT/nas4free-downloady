@@ -2,7 +2,7 @@
 /*
 	dly-files.php
 	
-    Copyright (c) 2015 - 2016 Andreas Schmidhuber
+    Copyright (c) 2015 - 2017 Andreas Schmidhuber
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -39,11 +39,14 @@ bindtextdomain("nas4free", "/usr/local/share/locale-dly");
 $pgtitle = array(gettext("Extensions"), gettext("Downloady")." ".$config['downloady']['version'], gettext("Files"));
 $pgperm['allowuser'] = TRUE;
 
-$return_val = mwexec("fetch -o {$config['downloady']['rootfolder']}version_server.txt https://raw.github.com/crestAT/nas4free-downloady/master/downloady/version.txt", false);
-if ($return_val == 0) {
-    $server_version = exec("cat {$config['downloady']['rootfolder']}version_server.txt");
-    if ($server_version != $config['downloady']['version']) { $savemsg = sprintf(gettext("New extension version %s available, push '%s' button to install the new version!"), $server_version, gettext("Update Extension")); }
-}   //EOversion-check
+$test_filename = "{$config['downloady']['rootfolder']}version_server.txt";
+if (!is_file($test_filename) || filemtime($test_filename) < time() - 86400) {	// test if file exists or is older than 24 hours
+	$return_val = mwexec("fetch -o {$test_filename} https://raw.github.com/crestAT/nas4free-downloady/master/downloady/version.txt", false);
+	if ($return_val == 0) {
+	    $server_version = exec("cat {$test_filename}");
+	    if ($server_version != $config['downloady']['version']) { $savemsg = sprintf(gettext("New extension version %s available, push '%s' button to install the new version!"), $server_version, gettext("Update Extension")); }
+	}
+}	//EOversion-check
 
 bindtextdomain("nas4free", "/usr/local/share/locale");                  // to get the right main menu language
 include("fbegin.inc");
