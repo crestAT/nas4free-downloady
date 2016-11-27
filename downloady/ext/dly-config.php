@@ -137,7 +137,7 @@ if (isset($_POST['save']) && $_POST['save']) {
                 	$cronjob['all_months'] = $a_cronjob[$cnid]['all_months'];
                 	$cronjob['all_weekdays'] = $a_cronjob[$cnid]['all_weekdays'];
                 	$cronjob['who'] = 'root';
-                	$cronjob['command'] = "{$config['downloady']['rootfolder']}downloady_start.php && logger downloady: scheduled startup";
+                	$cronjob['command'] = "/usr/local/bin/php-cgi -f {$config['downloady']['rootfolder']}downloady-start.php && logger downloady: scheduled startup";
                 } else {
                 	$cronjob['enable'] = true;
                 	$cronjob['uuid'] = uuid();
@@ -153,7 +153,7 @@ if (isset($_POST['save']) && $_POST['save']) {
                 	$cronjob['all_months'] = 1;
                 	$cronjob['all_weekdays'] = 1;
                 	$cronjob['who'] = 'root';
-                	$cronjob['command'] = "{$config['downloady']['rootfolder']}downloady_start.php && logger downloady: scheduled startup";
+                	$cronjob['command'] = "/usr/local/bin/php-cgi -f {$config['downloady']['rootfolder']}downloady-start.php && logger downloady: scheduled startup";
                     $config['downloady']['schedule_uuid_startup'] = $cronjob['uuid'];
                 }
                 if (isset($uuid) && (FALSE !== $cnid)) {
@@ -184,7 +184,7 @@ if (isset($_POST['save']) && $_POST['save']) {
                 	$cronjob['all_months'] = $a_cronjob[$cnid]['all_months'];
                 	$cronjob['all_weekdays'] = $a_cronjob[$cnid]['all_weekdays'];
                 	$cronjob['who'] = 'root';
-                	$cronjob['command'] = "{$config['downloady']['rootfolder']}downloady_stop.php && logger downloady: scheduled closedown";
+                	$cronjob['command'] = "/usr/local/bin/php-cgi -f {$config['downloady']['rootfolder']}downloady-stop.php && logger downloady: scheduled closedown";
                 } else {
                 	$cronjob['enable'] = true;
                 	$cronjob['uuid'] = uuid();
@@ -200,7 +200,7 @@ if (isset($_POST['save']) && $_POST['save']) {
                 	$cronjob['all_months'] = 1;
                 	$cronjob['all_weekdays'] = 1;
                 	$cronjob['who'] = 'root';
-                	$cronjob['command'] = "{$config['downloady']['rootfolder']}downloady_stop.php && logger downloady: scheduled closedown";
+                	$cronjob['command'] = "/usr/local/bin/php-cgi -f {$config['downloady']['rootfolder']}downloady-stop.php && logger downloady: scheduled closedown";
                     $config['downloady']['schedule_uuid_closedown'] = $cronjob['uuid'];
                 }
                 if (isset($uuid) && (FALSE !== $cnid)) {
@@ -326,9 +326,9 @@ function schedule_change() {
             <?php html_checkbox("resume", gettext("Resume"), $pconfig['resume'], gettext("Resume downloads after system startup."), "", false);?>
             <?php html_checkbox("enable_schedule", gettext("Daily schedule"), $pconfig['enable_schedule'], gettext("Enable scheduler for downloads."), "", false, "schedule_change()");?>
     		<?php $hours = array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23); ?>
-            <?php html_combobox("startup", gettext("Startup"), $config['downloady']['schedule_startup'], $hours, gettext("Choose a startup hour for")." ".$config['downloady']['appname'], true);?>
-            <?php html_combobox("closedown", gettext("Closedown"), $config['downloady']['schedule_closedown'], $hours, gettext("Choose a closedown hour for")." ".$config['downloady']['appname'], true);?>
-            <?php html_checkbox("full_bandwidth", gettext("Full bandwidth"), $pconfig['full_bandwidth'], gettext("Use full bandwidth on scheduled startup."), "", false);?>
+            <?php html_checkbox("full_bandwidth", gettext("Daily schedule")." - ".gettext("Full bandwidth"), $pconfig['full_bandwidth'], gettext("Use full bandwidth on scheduled startup."), "", false);?>
+            <?php html_combobox("startup", gettext("Daily schedule")." - ".gettext("Startup"), $config['downloady']['schedule_startup'], $hours, gettext("Choose a startup hour for")." ".$config['downloady']['appname'], true);?>
+            <?php html_combobox("closedown", gettext("Daily schedule")." - ".gettext("Closedown"), $config['downloady']['schedule_closedown'], $hours, gettext("Choose a closedown hour for")." ".$config['downloady']['appname'], true);?>
         </table>
         <div id="submit">
 			<input id="save" name="save" type="submit" class="formbtn" value="<?=gettext("Save & Restart");?>"/>
