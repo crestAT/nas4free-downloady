@@ -2,7 +2,7 @@
 /* 
     downloady-install.php
     
-    Copyright (c) 2015 - 2016 Andreas Schmidhuber
+    Copyright (c) 2015 - 2017 Andreas Schmidhuber
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without
@@ -29,14 +29,15 @@
     of the authors and should not be interpreted as representing official policies,
     either expressed or implied, of the FreeBSD Project.
 */
-$v = "v0.1";            // extension version
+$v = "v0.1.1";            // extension version
 $appname = "Downloady";
+$config_appname = "downloady";
 
 require_once("config.inc");
 
 $arch = $g['arch'];
 $platform = $g['platform'];
-// no check necessary since the extension is for all archictectures/platforms/releases
+// no check necessary since the extension is for all architectures/platforms/releases
 //if (($arch != "i386" && $arch != "amd64") && ($arch != "x86" && $arch != "x64" && $arch != "rpi" && $arch != "rpi2")) { echo "\f{$arch} is an unsupported architecture!\n"; exit(1);  }
 //if ($platform != "embedded" && $platform != "full" && $platform != "livecd" && $platform != "liveusb") { echo "\funsupported platform!\n";  exit(1); }
 
@@ -82,18 +83,58 @@ if ( !isset($config['downloady']) || !is_array($config['downloady'])) {
 $config['downloady']['appname'] = $appname;
 $config['downloady']['version'] = exec("cat {$install_dir}version.txt");
 $config['downloady']['rootfolder'] = $install_dir;
-$i = 0;
-if ( is_array($config['rc']['postinit'] ) && is_array( $config['rc']['postinit']['cmd'] ) ) {
-    for ($i; $i < count($config['rc']['postinit']['cmd']);) {
-        if (preg_match('/downloady/', $config['rc']['postinit']['cmd'][$i])) break; ++$i; }
+
+// remove start/stop commands
+// remove existing old rc format entries
+if (is_array($config['rc']) && is_array($config['rc']['postinit']) && is_array( $config['rc']['postinit']['cmd'])) {
+    $rc_param_count = count($config['rc']['postinit']['cmd']);
+    for ($i = 0; $i < $rc_param_count; ++$i) {
+        if (preg_match('/downloady/', $config['rc']['postinit']['cmd'][$i])) unset($config['rc']['postinit']['cmd'][$i]);
+    }
 }
-$config['rc']['postinit']['cmd'][$i] = $config['downloady']['rootfolder']."downloady_start.php";
-$i =0;
-if ( is_array($config['rc']['shutdown'] ) && is_array( $config['rc']['shutdown']['cmd'] ) ) {
-    for ($i; $i < count($config['rc']['shutdown']['cmd']); ) {
-        if (preg_match('/downloady/', $config['rc']['shutdown']['cmd'][$i])) break; ++$i; }
+if (is_array($config['rc']) && is_array($config['rc']['shutdown']) && is_array( $config['rc']['shutdown']['cmd'])) {
+    $rc_param_count = count($config['rc']['shutdown']['cmd']);
+    for ($i = 0; $i < $rc_param_count; ++$i) {
+        if (preg_match('/downloady/', $config['rc']['shutdown']['cmd'][$i])) unset($config['rc']['shutdown']['cmd'][$i]);
+    }
 }
-$config['rc']['shutdown']['cmd'][$i] = $config['downloady']['rootfolder']."downloady_stop.php";
+// remove existing entries for new rc format
+if (is_array($config['rc']) && is_array($config['rc']['param'])) {
+	$rc_param_count = count($config['rc']['param']);
+    for ($i = 0; $i < $rc_param_count; $i++) {
+        if (preg_match('/downloady/', $config['rc']['param'][$i]['value'])) unset($config['rc']['param'][$i]);
+	}
+}
+
+if ($release[0] >= 11.0) {	// new rc format
+	// postinit command
+	$rc_param = [];
+	$rc_param['uuid'] = uuid();
+	$rc_param['name'] = "{$appname} Extension";
+	$rc_param['value'] = "/usr/local/bin/php-cgi -f {$config['downloady']['rootfolder']}downloady-start.php";
+	$rc_param['comment'] = "Start {$appname} Extension";
+	$rc_param['typeid'] = '2';
+	$rc_param['enable'] = true;
+	$config['rc']['param'][] = $rc_param;
+	$config['downloady']['rc_uuid_start'] = $rc_param['uuid'];
+
+	unset($rc_param);
+	/* shutdown command */
+	$rc_param = [];
+	$rc_param['uuid'] = uuid();
+	$rc_param['name'] = "{$appname} Extension";
+	$rc_param['value'] = "/usr/local/bin/php-cgi -f {$config['downloady']['rootfolder']}downloady-stop.php";
+	$rc_param['comment'] = "Stop {$appname} Extension";
+	$rc_param['typeid'] = '3';
+	$rc_param['enable'] = true;
+	$config['rc']['param'][] = $rc_param;
+	$config['downloady']['rc_uuid_stop'] = $rc_param['uuid'];
+}
+else {
+	$config['rc']['postinit']['cmd'][] = "/usr/local/bin/php-cgi -f {$config['downloady']['rootfolder']}downloady-start.php";
+	$config['rc']['shutdown']['cmd'][] = "/usr/local/bin/php-cgi -f {$config['downloady']['rootfolder']}downloady-stop.php";
+}
+
 write_config();
 require_once("{$config['downloady']['rootfolder']}downloady-start.php");
 if ($new_installation) echo "\nInstallation completed, use WebGUI | Extensions | ".$appname." to configure the application!\n";

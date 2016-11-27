@@ -2,7 +2,7 @@
 /*
     dly-update_extension.php
     
-    Copyright (c) 2015 - 2016 Andreas Schmidhuber
+    Copyright (c) 2015 - 2017 Andreas Schmidhuber
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -67,17 +67,24 @@ function cronjob_process_updatenotification($mode, $data) {
 
 if (isset($_POST['ext_remove']) && $_POST['ext_remove']) {
 // remove start/stop commands
-    require_once("{$config['downloady']['rootfolder']}downloady-stop.php");
-    if ( is_array($config['rc']['postinit'] ) && is_array( $config['rc']['postinit']['cmd'] ) ) {
-		for ($i = 0; $i < count($config['rc']['postinit']['cmd']);) {
-    		if (preg_match('/downloady/', $config['rc']['postinit']['cmd'][$i])) { unset($config['rc']['postinit']['cmd'][$i]);} else{}
-		++$i;
-		}
+// remove existing old rc format entries
+	if (is_array($config['rc']) && is_array($config['rc']['postinit']) && is_array( $config['rc']['postinit']['cmd'])) {
+	    $rc_param_count = count($config['rc']['postinit']['cmd']);
+	    for ($i = 0; $i < $rc_param_count; ++$i) {
+	        if (preg_match('/downloady/', $config['rc']['postinit']['cmd'][$i])) unset($config['rc']['postinit']['cmd'][$i]);
+	    }
 	}
-	if ( is_array($config['rc']['shutdown'] ) && is_array( $config['rc']['shutdown']['cmd'] ) ) {
-		for ($i = 0; $i < count($config['rc']['shutdown']['cmd']); ) {
-            if (preg_match('/downloady/', $config['rc']['shutdown']['cmd'][$i])) { unset($config['rc']['shutdown']['cmd'][$i]); } else {}
-		++$i;
+	if (is_array($config['rc']) && is_array($config['rc']['shutdown']) && is_array( $config['rc']['shutdown']['cmd'])) {
+	    $rc_param_count = count($config['rc']['shutdown']['cmd']);
+	    for ($i = 0; $i < $rc_param_count; ++$i) {
+	        if (preg_match('/downloady/', $config['rc']['shutdown']['cmd'][$i])) unset($config['rc']['shutdown']['cmd'][$i]);
+	    }
+	}
+	// remove existing entries for new rc format
+	if (is_array($config['rc']) && is_array($config['rc']['param'])) {
+		$rc_param_count = count($config['rc']['param']);
+	    for ($i = 0; $i < $rc_param_count; $i++) {
+	        if (preg_match('/downloady/', $config['rc']['param'][$i]['value'])) unset($config['rc']['param'][$i]);
 		}
 	}
 // remove cronjobs

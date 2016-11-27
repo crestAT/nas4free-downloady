@@ -2,7 +2,7 @@
 /*
     downloady-start.php 
 
-    Copyright (c) 2015 - 2016 Andreas Schmidhuber
+    Copyright (c) 2015 - 2017 Andreas Schmidhuber
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,10 @@ elseif ($arch == "amd64") $arch = "x64";
 
 mwexec("cp -R {$config['downloady']['rootfolder']}ext/* {$extension_dir}/", true);          // copy extension
 mwexec("cp -R {$config['downloady']['rootfolder']}{$arch}/local/* /usr/local/", true);      // copy wget binaries      
-if (!is_link("/usr/local/share/locale-dly")) { mwexec("ln -s {$config['downloady']['rootfolder']}locale-dly /usr/local/share/", true); }     // create link to languages
+if (!is_link("/usr/local/share/locale-dly")) mwexec("ln -s {$config['downloady']['rootfolder']}locale-dly /usr/local/share/", true);     // create link to languages
+// for N4F 11.x series
+if (is_file("/usr/lib/libssl.so.8")) mwexec("ln -sf /usr/lib/libssl.so.8 /usr/lib/libssl.so.7", true);
+if (is_file("/lib/libcrypto.so.8")) mwexec("ln -sf /lib/libcrypto.so.8 /usr/lib/libcrypto.so.7", true);
 
 if (isset($config['downloady']['enable'])) {
 	if (isset($config['downloady']['resume']) || isset($config['downloady']['enable_schedule'])) { 
